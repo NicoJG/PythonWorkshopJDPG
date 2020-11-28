@@ -10,38 +10,36 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import animation
 
-fig = plt.figure()
-lines = plt.plot([], 'o')
-ball = lines[0]
+fig,ax = plt.subplots()
+lines, = plt.plot([],[], 'o')
 
-plt.axis("scaled")
-plt.xlim(-1,1)
-plt.ylim(-1,1)
+ax.axis("scaled")
+ax.set_xlim(-1,1)
+ax.set_ylim(-1,1)
 
 fps = 60
-
-v_x = np.random.rand()*2-1
-v_y = np.random.rand()*2-1
 
 x = 0
 y = 0
 
-def animieren(frames):
+v_x = np.random.choice([-1,1])*np.random.uniform(0.5,2)
+v_y = np.random.choice([-1,1])*np.random.uniform(0.5,2)
+
+def animieren(frame):
     global x,y,v_x,v_y
-    #Gebe hier die Änderung der Koordinaten an
-    t = frames/fps
-    x = x + v_x/fps
-    y = y + v_y/fps
+    #t = frame/fps
+    x += v_x/fps
+    y += v_y/fps
     if (x < -1) or (x > 1):
         v_x = -v_x
     if (y < -1) or (y > 1):
         v_y = -v_y
     
-    ball.set_data(x,y)
-    return ball
+    lines.set_data(x,y)
+    return lines,
 
 #Hier darfst du natürlich frames und interval so einstellen, wie du möchtest
-anim = animation.FuncAnimation(fig, animieren,frames=1000, interval = 1000/fps, blit=True)
+anim = animation.FuncAnimation(fig, animieren, interval = 1000/fps, blit=True)
 
 plt.show()
 
