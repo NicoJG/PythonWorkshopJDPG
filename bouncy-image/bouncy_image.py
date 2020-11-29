@@ -1,4 +1,5 @@
 import numpy as np
+import random
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 import time
@@ -24,7 +25,7 @@ def init_animation():
     balls = []
     ax.patches = []
     for i in range(n):
-        ball = Ball(0,0,"blue")
+        ball = Ball(0,0,(np.random.rand(),np.random.rand(),np.random.rand()))
         balls.append(ball)
         ax.add_patch(ball.artist)
 
