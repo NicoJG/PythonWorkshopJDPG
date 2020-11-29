@@ -3,45 +3,9 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 import time
 
-# class for the bouncing balls
-class Ball:
-    r = 0.01
-    def __init__(self, x, y, color):
-        self.x = x
-        self.y = y
-        self.color = color
-        # starting velocity
-        self.v_x = np.random.uniform(0.5,2)*np.random.choice([-1,1])
-        self.v_y = np.random.uniform(0.5,2)*np.random.choice([-1,1])
-
-    def update(self, dt):
-        self.x += self.v_x*dt
-        self.y += self.v_y*dt
-        self.boundary_collision()
-
-    def boundary_collision(self):
-        global boundary
-        if self.x-self.r <= boundary.l:
-            self.x = boundary.l + self.r
-            self.v_x *= -1
-        elif self.x+self.r >= boundary.r:
-            self.x = boundary.r - self.r
-            self.v_x *= -1
-        if self.y-self.r <= boundary.b:
-            self.y = boundary.b + self.r
-            self.v_y *= -1
-        elif self.y+self.r >= boundary.t:
-            self.y = boundary.t - self.r
-            self.v_y *= -1
-
-
-# class for the boundaries in which the balls should be contained
-class Boundary:
-    def __init__(self, left, right, bottom, top):
-        self.l = left
-        self.r = right 
-        self.t = top 
-        self.b = bottom
+# import other files of this project
+from ball import Ball
+from boundary import Boundary
 
 # general constants
 animation_time = 2 # how many seconds should the animation run
@@ -82,7 +46,7 @@ def update_animation(dt):
     x_data = []
     y_data = []
     for ball in balls:
-        ball.update(dt)
+        ball.update(dt, boundary)
         x_data.append(ball.x)
         y_data.append(ball.y)
     
