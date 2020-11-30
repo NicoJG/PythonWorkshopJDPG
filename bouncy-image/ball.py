@@ -5,32 +5,32 @@ import matplotlib
 class Ball:
     r = 0.02
     def __init__(self, x, y, color):
-        self.x = x
-        self.y = y
+        self.pos = np.array([x,y])
         self.color = color
         # create matplotlib representation
-        self.artist = matplotlib.patches.Circle(xy=(self.x,self.y), radius=self.r, color=self.color)
+        self.artist = matplotlib.patches.Circle(xy=(self.pos[0],self.pos[1]), radius=self.r, color=self.color)
         # starting velocity
-        self.v_x = np.random.uniform(0.5,2)*np.random.choice([-1,1])
-        self.v_y = np.random.uniform(0.5,2)*np.random.choice([-1,1])
+        self.v = np.array([np.random.uniform(0.5,2),0])
+        rotate = lambda phi : np.array([ [np.cos(phi), -np.sin(phi)], [np.sin(phi),  np.cos(phi)] ])
+        self.v = rotate(np.random.uniform(0,2*np.pi)).dot(self.v)
+        
 
     def update(self, dt, boundary):
-        self.x += self.v_x*dt
-        self.y += self.v_y*dt
+        self.pos += self.v*dt
         self.boundary_collision(boundary)
-        self.artist.center = (self.x,self.y)
+        self.artist.center = (self.pos[0],self.pos[1])
         self.artist.radius = self.r
 
     def boundary_collision(self, boundary):
-        if self.x-self.r <= boundary.l:
-            self.x = boundary.l + self.r
-            self.v_x *= -1
-        elif self.x+self.r >= boundary.r:
-            self.x = boundary.r - self.r
-            self.v_x *= -1
-        if self.y-self.r <= boundary.b:
-            self.y = boundary.b + self.r
-            self.v_y *= -1
-        elif self.y+self.r >= boundary.t:
-            self.y = boundary.t - self.r
-            self.v_y *= -1
+        if self.pos[0]-self.r <= boundary.l:
+            self.pos[0] = boundary.l + self.r
+            self.v[0] *= -1
+        elif self.pos[0]+self.r >= boundary.r:
+            self.pos[0] = boundary.r - self.r
+            self.v[0] *= -1
+        if self.pos[1]-self.r <= boundary.b:
+            self.pos[1] = boundary.b + self.r
+            self.v[1] *= -1
+        elif self.pos[1]+self.r >= boundary.t:
+            self.pos[1] = boundary.t - self.r
+            self.v[1] *= -1

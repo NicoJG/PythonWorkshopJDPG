@@ -25,7 +25,7 @@ def init_animation():
     balls = []
     ax.patches = []
     for i in range(n):
-        ball = Ball(0,0,(np.random.rand(),np.random.rand(),np.random.rand()))
+        ball = Ball(0.,0.,(np.random.rand(),np.random.rand(),np.random.rand()))
         balls.append(ball)
         ax.add_patch(ball.artist)
 
@@ -42,7 +42,6 @@ def calc_dt():
     while last_time-starting_time < animation_time:
         dt = time.time()-last_time # in seconds
         last_time = time.time()
-        print(dt)
         yield dt
 
 # does the animation
