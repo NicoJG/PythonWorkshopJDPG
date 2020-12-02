@@ -12,19 +12,18 @@ from boundary import Boundary
 
 # init plot
 fig,ax = plt.subplots()
-ln = plt.plot([],[])[0]
 
 # init_func called before the first frame
 def init_animation():
-    global balls, boundary
+    global balls, boundary, scat
     # init balls
     balls = []
-    ax.patches = []
     # get image pixels
     img = Image.open(image_path)
     pix = img.load()
     # set boundaries
     boundary = Boundary(0,img.size[0],0,img.size[1])
+    # init balls
     for col in range(img.size[0]):
         for row in range(img.size[1]):
             # TODO: don't use white/grey/transparent pixels
@@ -34,12 +33,21 @@ def init_animation():
                 color = [rgba/255 for rgba in pix[col,row]]
                 ball = Ball(x,y,color)
                 balls.append(ball)
-                ax.add_patch(ball.artist)
+    # init plot data
+    x_data = []
+    y_data = []
+    color_data = []
+    for ball in balls:
+        x_data.append(ball.x[0])
+        y_data.append(ball.x[1])
+        color_data.append(ball.color)
+    # init plot
+    scat = ax.scatter(x_data, y_data, c=color_data)
 
     # init limits
     ax.set_xlim(boundary.l-1, boundary.r+1)
     ax.set_ylim(boundary.b-1, boundary.t+1)
-    return ax.patches
+    return scat,
 
 # generator function for each frames delta time
 def calc_dt():
@@ -60,7 +68,7 @@ def calc_dt():
 
 # does the animation
 def update_animation(dt):
-    global balls
+    global balls, ln
 
     # move every ball and check the boundary collision
     for ball in balls:
@@ -74,10 +82,15 @@ def update_animation(dt):
     #         Ball.ball_collision(balls[i],balls[j])
     
     # update the visuals
+    x_data = []
+    y_data = []
     for ball in balls:
-        ball.update_artist()
+        x_data.append(ball.x[0])
+        y_data.append(ball.x[1])
 
-    return ax.patches
+    scat.set_offsets(np.column_stack((x_data,y_data)))
+
+    return scat,
 
 ani = anim.FuncAnimation(fig, update_animation, frames=calc_dt, init_func=init_animation, interval=1000/fps, blit=True)
 
