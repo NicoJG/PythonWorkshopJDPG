@@ -1,17 +1,18 @@
 import numpy as np
 import matplotlib
 
+from constants import *
+
 # class for the bouncing balls
 class Ball:
-    r = 0.35
     def __init__(self, x, y, color):
         # position vector x
         self.x = np.array([x,y])
         self.color = color
         # create matplotlib representation
-        self.artist = matplotlib.patches.Circle(xy=(self.x[0],self.x[1]), radius=self.r, color=self.color)
+        self.artist = matplotlib.patches.Circle(xy=(self.x[0],self.x[1]), radius=r, color=self.color)
         # starting velocity
-        self.v = np.array([np.random.uniform(0.5,2),0])
+        self.v = np.array([np.random.uniform(v_min,v_max),0])
         rotate = lambda phi : np.array([ [np.cos(phi), -np.sin(phi)], [np.sin(phi),  np.cos(phi)] ])
         self.v = rotate(np.random.uniform(0,2*np.pi)).dot(self.v)
         
@@ -20,20 +21,20 @@ class Ball:
 
     def update_artist(self):
         self.artist.center = (self.x[0],self.x[1])
-        self.artist.radius = self.r
+        self.artist.radius = r
 
     def boundary_collision(self, boundary):
-        if self.x[0]-self.r <= boundary.l:
-            self.x[0] = boundary.l + self.r
+        if self.x[0]-r <= boundary.l:
+            self.x[0] = boundary.l + r
             self.v[0] *= -1
-        elif self.x[0]+self.r >= boundary.r:
-            self.x[0] = boundary.r - self.r
+        elif self.x[0]+r >= boundary.r:
+            self.x[0] = boundary.r - r
             self.v[0] *= -1
-        if self.x[1]-self.r <= boundary.b:
-            self.x[1] = boundary.b + self.r
+        if self.x[1]-r <= boundary.b:
+            self.x[1] = boundary.b + r
             self.v[1] *= -1
-        elif self.x[1]+self.r >= boundary.t:
-            self.x[1] = boundary.t - self.r
+        elif self.x[1]+r >= boundary.t:
+            self.x[1] = boundary.t - r
             self.v[1] *= -1
 
     @staticmethod

@@ -6,17 +6,9 @@ import time
 from PIL import Image
 
 # import other files of this project
+from constants import *
 from ball import Ball
 from boundary import Boundary
-
-# general constants
-animation_start_delay = 2 # how many seconds the animation should stand still at the beginning
-animation_time = 10 # how many seconds should the animation run
-animation_end_delay = 2 # how many seconds the animation should stand still at the end
-fps = 60 # frames per second
-#n = 100 # number of balls
-#boundary = Boundary(-1,1,-1,1) # ball container
-image_path = "python_logo_32.png"
 
 # init plot
 fig,ax = plt.subplots()
@@ -35,6 +27,7 @@ def init_animation():
     boundary = Boundary(0,img.size[0],0,img.size[1])
     for col in range(img.size[0]):
         for row in range(img.size[1]):
+            # TODO: don't use white/grey/transparent pixels
             if pix[col,row][3] > 0:
                 x = float(col)
                 y = float(row)
@@ -75,11 +68,10 @@ def update_animation(dt):
         ball.boundary_collision(boundary)
     
     # check every ball pair for a collision
-    for i in range(len(balls)-1):
-        for j in range(i+1,len(balls)):
-            x = 0
-            # TODO: check if balls are in the same part of space rather than check every pair
-            #Ball.ball_collision(balls[i],balls[j])
+    # for i in range(len(balls)-1):
+    #     for j in range(i+1,len(balls)):
+    #         # TODO: check if balls are in the same part of space rather than check every pair
+    #         Ball.ball_collision(balls[i],balls[j])
     
     # update the visuals
     for ball in balls:
