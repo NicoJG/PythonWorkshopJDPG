@@ -3,7 +3,7 @@ import matplotlib
 
 # class for the bouncing balls
 class Ball:
-    r = 0.01
+    r = 0.35
     def __init__(self, x, y, color):
         # position vector x
         self.x = np.array([x,y])
