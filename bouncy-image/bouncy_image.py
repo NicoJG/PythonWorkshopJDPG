@@ -68,7 +68,7 @@ def calc_dt():
 
 # does the animation
 def update_animation(dt):
-    global balls, ln
+    global balls, scat
 
     # move every ball and check the boundary collision
     for ball in balls:
@@ -89,7 +89,6 @@ def update_animation(dt):
         y_data.append(ball.x[1])
 
     scat.set_offsets(np.column_stack((x_data,y_data)))
-
     return scat,
 
 ani = anim.FuncAnimation(fig, update_animation, frames=calc_dt, init_func=init_animation, interval=1000/fps, blit=True)

@@ -39,13 +39,13 @@ class Ball:
 
     @staticmethod
     def ball_collision(a, b):
-        if np.linalg.norm(a.x - b.x) <= 2*a.r :
+        if np.linalg.norm(a.x - b.x) <= 2*r :
             # do collision (assume same masses and equal radii)
             # set the positions so that they are barely touching and not overlapping
             d = a.x - b.x
             n = (1/np.linalg.norm(d))*d
-            a.x = a.x - 1/2*d + a.r*n
-            b.x = b.x + 1/2*d - a.r*n
+            a.x = a.x - 1/2*d + r*n
+            b.x = b.x + 1/2*d - r*n
             # calc the velocities
             # Wikipedia "Elastic collision"
             # v_1' = v_1 - 2*m_2/(m_1+m_2)*<v_1-v_2,x_1-x_2>/||x_1-x_2||^2 * (x_1-x_2)
