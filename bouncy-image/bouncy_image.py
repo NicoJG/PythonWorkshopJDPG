@@ -9,7 +9,9 @@ from ball import Ball
 from boundary import Boundary
 
 # general constants
+animation_start_delay = 2 # how many seconds the animation should stand still at the beginning
 animation_time = 10 # how many seconds should the animation run
+animation_end_delay = 2 # how many seconds the animation should stand still at the end
 fps = 60 # frames per second
 n = 100 # number of balls
 boundary = Boundary(-1,1,-1,1) # ball container
@@ -39,10 +41,18 @@ def init_animation():
 # generator function for each frames delta time
 def calc_dt():
     starting_time = time.time()
-    last_time = starting_time-1/fps
-    while last_time-starting_time < animation_time:
-        dt = time.time()-last_time # in seconds
-        last_time = time.time()
+    current_time = starting_time-1/fps
+    while True:
+        last_time = current_time
+        current_time = time.time()
+        if current_time - starting_time <= animation_start_delay:
+            dt = 0.
+        elif current_time - starting_time <= animation_start_delay + animation_time:
+            dt = time.time()-last_time # in seconds
+        elif current_time - starting_time <= animation_start_delay + animation_time + animation_end_delay:
+            dt = 0.
+        else:
+            break
         yield dt
 
 # does the animation
