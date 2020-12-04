@@ -26,6 +26,7 @@ def init_animation():
     # set boundaries
     boundary = Boundary(-1,img.size[0]+1,-1,img.size[1]+1)
     # init balls
+    # TODO: Picture is inverted in the y direction
     for col in range(img.size[0]):
         for row in range(img.size[1]):
             # TODO: don't use white/grey/transparent pixels
