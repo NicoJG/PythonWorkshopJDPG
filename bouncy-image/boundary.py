@@ -5,3 +5,5 @@ class Boundary:
         self.r = right 
         self.t = top 
         self.b = bottom
+        self.width = abs(self.r-self.l)
+        self.height = abs(self.t-self.b)

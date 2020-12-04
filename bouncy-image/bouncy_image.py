@@ -10,6 +10,9 @@ from constants import *
 from ball import Ball
 from boundary import Boundary
 
+# TODO: collisions are kinda weird
+# TODO: the balls always clutter on the bottom left... why?
+
 # init plot
 fig,ax = plt.subplots()
 
@@ -22,7 +25,7 @@ def init_animation():
     img = Image.open(image_path)
     pix = img.load()
     # set boundaries
-    boundary = Boundary(0,img.size[0],0,img.size[1])
+    boundary = Boundary(-1,img.size[0]+1,-1,img.size[1]+1)
     # init balls
     for col in range(img.size[0]):
         for row in range(img.size[1]):
@@ -42,11 +45,12 @@ def init_animation():
         y_data.append(ball.x[1])
         color_data.append(ball.color)
     # init plot
+    # TODO: fit the marker size with the ball radius
     scat = ax.scatter(x_data, y_data, c=color_data)
 
     # init limits
-    ax.set_xlim(boundary.l-1, boundary.r+1)
-    ax.set_ylim(boundary.b-1, boundary.t+1)
+    ax.set_xlim(boundary.l, boundary.r)
+    ax.set_ylim(boundary.b, boundary.t)
     return scat,
 
 # generator function for each frames delta time
@@ -69,17 +73,26 @@ def calc_dt():
 # does the animation
 def update_animation(dt):
     global balls, scat
-
+    #print("dt=",dt)
+    temp_time = time.time()
     # move every ball and check the boundary collision
     for ball in balls:
         ball.move(dt)
         ball.boundary_collision(boundary)
-    
-    # check every ball pair for a collision
-    # for i in range(len(balls)-1):
-    #     for j in range(i+1,len(balls)):
-    #         # TODO: check if balls are in the same part of space rather than check every pair
-    #         Ball.ball_collision(balls[i],balls[j])
+    #print("move+boundary=",time.time()-temp_time)
+    temp_time = time.time()
+
+    balls_by_sector = Ball.sort_balls_in_sectors(balls, boundary)
+    #print("balls_by_sector=",time.time()-temp_time)
+    temp_time = time.time()
+    # check every ball pair in every sector
+    for key in balls_by_sector:
+        balls_in_sector = balls_by_sector[key]
+        for i in range(len(balls_in_sector)-1):
+            for j in range(i+1,len(balls_in_sector)):
+                Ball.ball_collision(balls_in_sector[i],balls_in_sector[j])
+    #print("collisions=",time.time()-temp_time)
+    temp_time = time.time()
     
     # update the visuals
     x_data = []
@@ -87,10 +100,15 @@ def update_animation(dt):
     for ball in balls:
         x_data.append(ball.x[0])
         y_data.append(ball.x[1])
-
     scat.set_offsets(np.column_stack((x_data,y_data)))
+    
+    #print("visuals=",time.time()-temp_time)
+    temp_time = time.time()
     return scat,
 
+
+
+# animate
 ani = anim.FuncAnimation(fig, update_animation, frames=calc_dt, init_func=init_animation, interval=1000/fps, blit=True)
 
 plt.show()

@@ -52,3 +52,49 @@ class Ball:
             a.v = a.v - np.dot(a.v-b.v,a.x-b.x)/np.linalg.norm(a.x-b.x)**2 * (a.x-b.x)
             b.v = b.v - np.dot(b.v-a.v,b.x-a.x)/np.linalg.norm(b.x-a.x)**2 * (b.x-a.x)
 
+    @staticmethod
+    def sort_balls_in_sectors(balls, boundary):
+        # divide the area into different sectors
+        # and only check the pairs in a given sector for collisions
+        # for every ball do double binary search (so always divide the sector in half)
+        # number of divisions per axis:
+        n_div = [0,0]
+        n_div[0] = int(np.ceil(1/np.log(2)*np.log(boundary.width/sector_max_size)))
+        n_div[1] = int(np.ceil(1/np.log(2)*np.log(boundary.height/sector_max_size)))
+        sector_length = [0.,0.]
+        sector_length[0] = 1/2**n_div[0]*boundary.width
+        sector_length[1] = 1/2**n_div[1]*boundary.height
+        # fill the sectors with the balls:
+        balls_by_sector = {} # key is tuple of starting coords of the sector
+        for ball in balls:
+            keys = [[],[]] # x and y keys for this ball
+            for i_x in range(2):
+                # do the x or y axis
+                # bounds of the currently examined part
+                if i_x == 0:
+                    temp_bounds = [boundary.l,boundary.r]
+                else:
+                    temp_bounds = [boundary.b,boundary.t]
+                # check both half for n_div[i_x] divisions
+                for i in range(n_div[i_x]):
+                    temp_middle = (temp_bounds[1]+temp_bounds[0])/2
+                    if ball.x[i_x] < temp_middle - r:
+                        # ball only is in the left/lower sector
+                        temp_bounds[1] = temp_middle
+                    elif ball.x[i_x] > temp_middle + r:
+                        # ball only is in the right/upper sector
+                        temp_bounds[0] = temp_middle
+                    else:
+                        # ball is intersecting both areas
+                        # so it must be added to both sectors next to the middle
+                        keys[i_x].append(temp_middle-sector_length[i_x])
+                        temp_bounds = [temp_middle,temp_middle+sector_length[i_x]]
+                        break
+                keys[i_x].append(temp_bounds[0])
+            # add the ball to the according sector(s)
+            for x in keys[0]:
+                for y in keys[1]:
+                    if (x,y) not in balls_by_sector:
+                        balls_by_sector[(x,y)] = []
+                    balls_by_sector[(x,y)].append(ball)
+        return balls_by_sector
