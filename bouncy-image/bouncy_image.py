@@ -10,8 +10,7 @@ from constants import *
 from ball import Ball
 from boundary import Boundary
 
-# TODO: collisions are kinda weird
-# TODO: the balls always clutter on the bottom left... why?
+# TODO: collisions are kinda weird when multiple collisions happen to one ball on one frame
 
 # init plot
 fig,ax = plt.subplots()

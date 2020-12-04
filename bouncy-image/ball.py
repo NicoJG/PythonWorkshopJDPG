@@ -49,8 +49,10 @@ class Ball:
             # calc the velocities
             # Wikipedia "Elastic collision"
             # v_1' = v_1 - 2*m_2/(m_1+m_2)*<v_1-v_2,x_1-x_2>/||x_1-x_2||^2 * (x_1-x_2)
-            a.v = a.v - np.dot(a.v-b.v,a.x-b.x)/np.linalg.norm(a.x-b.x)**2 * (a.x-b.x)
-            b.v = b.v - np.dot(b.v-a.v,b.x-a.x)/np.linalg.norm(b.x-a.x)**2 * (b.x-a.x)
+            v_a_new = a.v - np.dot(a.v-b.v,a.x-b.x)/np.linalg.norm(a.x-b.x)**2 * (a.x-b.x)
+            v_b_new = b.v - np.dot(b.v-a.v,b.x-a.x)/np.linalg.norm(b.x-a.x)**2 * (b.x-a.x)
+            a.v = v_a_new
+            b.v = v_b_new
 
     @staticmethod
     def sort_balls_in_sectors(balls, boundary):
